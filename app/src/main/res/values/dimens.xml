@@ -1,0 +1,5 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="letter_button_width">100dp</dimen>
+    <dimen name="letter_button_height">60dp</dimen>
+</resources>
