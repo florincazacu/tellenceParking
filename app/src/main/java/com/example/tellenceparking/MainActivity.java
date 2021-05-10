@@ -11,24 +11,22 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.tellenceparking.geofence.Constants;
 import com.example.tellenceparking.geofence.GeofenceBroadcastReceiver;
 import com.example.tellenceparking.geofence.GeofencingConstants;
 import com.example.tellenceparking.geofence.LandmarkDataObject;
 import com.example.tellenceparking.geofence.NotificationUtils;
+import com.example.tellenceparking.layout.ExpandableHeaderItem;
+import com.example.tellenceparking.layout.Item;
 import com.example.tellenceparking.model.ParkingLot;
 import com.example.tellenceparking.requests.ParkingSlotsRequest;
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -40,45 +38,41 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.SettingsClient;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
+import com.xwray.groupie.ExpandableGroup;
+import com.xwray.groupie.GroupAdapter;
+import com.xwray.groupie.Section;
+import com.xwray.groupie.ViewHolder;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-//import com.example.tellenceparking.geofence.Constants;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    List<Geofence> geofenceList = new ArrayList<>();
-
-    private static final String TAG = "HuntMainActivity";
-    private GeofencingClient geofencingClient;
-    private final ParkingSlotsRequest parkingSlotsRequest = new ParkingSlotsRequest();
-    //    private GeofenceViewModel viewModel;
+    private static final String TAG = "MainActivity";
     private static final String ACTION_GEOFENCE_EVENT = "HuntMainActivity.treasureHunt.action.ACTION_GEOFENCE_EVENT";
-    private final boolean runningQOrLater = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q;
     private static final int REQUEST_TURN_DEVICE_LOCATION_ON = 29;
     private static final int REQUEST_FOREGROUND_AND_BACKGROUND_PERMISSION_RESULT_CODE = 33;
     private static final int REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE = 34;
     private static final int LOCATION_PERMISSION_INDEX = 0;
     private static final int BACKGROUND_LOCATION_PERMISSION_INDEX = 1;
+    private GeofencingClient geofencingClient;
+    private final ParkingSlotsRequest parkingSlotsRequest = new ParkingSlotsRequest();
+
+    private final boolean runningQOrLater = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        viewModel = ViewModelProviders.of(this, new SavedStateViewModelFactory(getApplication(),
-//                this)).get(GeofenceViewModel.class);
         setContentView(R.layout.activity_main);
 
         geofencingClient = LocationServices.getGeofencingClient(this);
         NotificationUtils.createChannel(this);
         // Get the geofences used. Geofence data is hard coded in this sample.
-        populateGeofenceList();
+//        populateGeofenceList();
 
         parkingSlotsRequest.fetchParkingLot(new ParkingSlotsRequest.SlotRequestCallback() {
             @Override
@@ -91,89 +85,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(MainActivity.this, "onSlotsFailure", Toast.LENGTH_SHORT).show();
             }
         });
+    }
 
-
-//        GetDataService service = RetrofitClientInstance.getRetrofitInstance().create(GetDataService.class);
-//
-//        Call<ParkingLot> call = service.getParkingStatus();
-//        call.enqueue(new Callback<ParkingLot>() {
-//
-//            @Override
-//            public void onResponse(@NotNull Call<ParkingLot> call, @NotNull Response<ParkingLot> response) {
-//
-//                ParkingLot parkingLot = response.body();
-//                LinearLayout linearLayout = findViewById(R.id.buttons_layout);
-////                GridLayout linearLayout = findViewById(R.id.buttons_layout);
-//
-//                Button getLocation = new Button(MainActivity.this);
-////                getLocation.setLayoutParams(params);
-//                getLocation.setText("Get location");
-//                getLocation.setBackgroundColor(Color.YELLOW);
-//                getLocation.setOnClickListener(MainActivity.this);
-//                linearLayout.addView(getLocation);
-//
-//                assert parkingLot != null;
-//                parkingLot.getParking_spaces().forEach((floor, parkingSpaces) -> {
-//                    LinearLayout row = new LinearLayout(MainActivity.this);
-//                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(getResources().getDimensionPixelSize(R.dimen.letter_button_width),
-//                            getResources().getDimensionPixelSize(R.dimen.letter_button_height));
-////                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-////                            ViewGroup.LayoutParams.WRAP_CONTENT);
-//                    params.weight = 1;
-//                    parkingSpaces.forEach(parkingSpace -> {
-//                        Button parkingSpaceBtn = new Button(MainActivity.this);
-//                        parkingSpaceBtn.setLayoutParams(params);
-//                        parkingSpaceBtn.setText(parkingSpace.getId());
-//                        parkingSpaceBtn.setBackgroundColor(parkingSpace.getStatus() == 1 ? Color.GREEN : Color.RED);
-//
-//                        row.addView(parkingSpaceBtn);
-//                    });
-//                    TextView textView = new TextView(MainActivity.this);
-//                    textView.setText("Floor: " + floor);
-//                    textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-//                    textView.setGravity(Gravity.CENTER);
-//
-//                    linearLayout.addView(textView);
-//                    linearLayout.addView(row);
-//                });
-//
-//                Toast.makeText(MainActivity.this, "Response!", Toast.LENGTH_SHORT).show();
-//            }
-//
-//            @Override
-//            public void onFailure(@NotNull Call<ParkingLot> call, @NotNull Throwable t) {
-//                Log.e("call error: ", t.toString());
-//                Toast.makeText(MainActivity.this, "Something went wrong...Please try later!", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-
-
+    private Item generateItem(String id, int status) {
+        if (id.contains("_") && !id.endsWith("_")) {
+            id = id.substring(id.indexOf('_') + 1);
+        }
+        switch (status) {
+            case 1:
+                return new Item(Color.GREEN, id);
+            case 2:
+                return new Item(Color.YELLOW, id);
+            default:
+                return new Item(Color.RED, id);
+        }
     }
 
     private void populateView(ParkingLot parkingLot) {
-        LinearLayout linearLayout = findViewById(R.id.buttons_layout);
+        GroupAdapter<ViewHolder> adapter = new GroupAdapter<>();
+        adapter.setSpanCount(4);
         parkingLot.getParking_spaces().forEach((floor, parkingSpaces) -> {
-            LinearLayout row = new LinearLayout(MainActivity.this);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(getResources().getDimensionPixelSize(R.dimen.letter_button_width),
-                    getResources().getDimensionPixelSize(R.dimen.letter_button_height));
-//                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-//                            ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.weight = 1;
-            parkingSpaces.forEach(parkingSpace -> {
-                Button parkingSpaceBtn = new Button(MainActivity.this);
-                parkingSpaceBtn.setLayoutParams(params);
-                parkingSpaceBtn.setText(parkingSpace.getId());
-                parkingSpaceBtn.setBackgroundColor(parkingSpace.getStatus() == 1 ? Color.GREEN : Color.RED);
+            List<Item> parkingSlots = new ArrayList<>();
 
-                row.addView(parkingSpaceBtn);
-            });
-            TextView textView = new TextView(MainActivity.this);
-            textView.setText("Floor: " + floor);
-            textView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            textView.setGravity(Gravity.CENTER);
+            parkingSpaces.forEach(parkingSpace -> parkingSlots.add(generateItem(parkingSpace.getId(), parkingSpace.getStatus())));
+            RecyclerView rv = findViewById(R.id.recycler_view);
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(this, adapter.getSpanCount());
+            gridLayoutManager.setSpanSizeLookup(adapter.getSpanSizeLookup());
+            rv.setLayoutManager(gridLayoutManager);
+            rv.setAdapter(adapter);
 
-            linearLayout.addView(textView);
-            linearLayout.addView(row);
+            ExpandableGroup boringGroup = new ExpandableGroup(new ExpandableHeaderItem("Floor: " + floor), true);
+            boringGroup.add(new Section(parkingSlots));
+            adapter.add(boringGroup);
         });
     }
 
@@ -197,10 +140,55 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View view) {
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, int[] grantResults) {
+        Log.d(TAG, "onRequestPermissionResult");
+        if (grantResults.length == 0 || grantResults[LOCATION_PERMISSION_INDEX] == PackageManager.PERMISSION_DENIED ||
+                (requestCode == REQUEST_FOREGROUND_AND_BACKGROUND_PERMISSION_RESULT_CODE &&
+                        grantResults[BACKGROUND_LOCATION_PERMISSION_INDEX] ==
+                                PackageManager.PERMISSION_DENIED)) {
+            // Permission denied.
+            Snackbar.make(findViewById(R.id.toolbar), R.string.permission_denied_explanation, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(R.string.settings, view ->
+                            startActivity(new Intent()
+                                    .setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                    .setData(Uri.fromParts("package", BuildConfig.APPLICATION_ID, null))
+                                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)))
+                    .show();
+
+        } else {
+            checkDeviceLocationSettingsAndStartGeofence(true);
+        }
+    }
+
     private void checkPermissionsAndStartGeofencing() {
-//        if (viewModel.geofenceIsActive()) {
-//            return;
-//        }
         if (foregroundAndBackgroundLocationPermissionApproved()) {
             checkDeviceLocationSettingsAndStartGeofence(true);
         } else {
@@ -236,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Log.d(TAG, "Error getting location settings resolution: " + sendEx.getMessage());
                 }
             } else {
-                Snackbar.make(findViewById(R.id.buttons_layout), R.string.location_required_error, Snackbar.LENGTH_INDEFINITE)
+                Snackbar.make(findViewById(R.id.toolbar), R.string.location_required_error, Snackbar.LENGTH_INDEFINITE)
                         .setAction(android.R.string.ok, v -> checkDeviceLocationSettingsAndStartGeofence(true)).show();
             }
         });
@@ -293,7 +281,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Log.d(TAG, "Request foreground only location permission");
         ActivityCompat.requestPermissions(MainActivity.this,
-                permissionsArray.toArray(new String[permissionsArray.size()]), resultCode);
+                permissionsArray.toArray(new String[0]), resultCode);
     }
 
     /*
@@ -303,17 +291,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * is now "active."
      */
     private void addGeofenceForClue() {
-//        if (viewModel.geofenceIsActive()) {
-//            return;
-//        }
-//        int currentGeofenceIndex = viewModel.nextGeofenceIndex();
-//        if (currentGeofenceIndex >= GeofencingConstants.getNUM_LANDMARKS()) {
-//            removeGeofences();
-//            viewModel.geofenceActivated();
-//            return;
-//        }
-//        LandmarkDataObject currentGeofenceData = GeofencingConstants.LANDMARK_DATA[currentGeofenceIndex];
-
         List<Geofence> geofences = new ArrayList<>();
 
         for (int i = 0; i < GeofencingConstants.getNUM_LANDMARKS(); i++) {
@@ -386,59 +363,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 });
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NotNull String[] permissions, int[] grantResults) {
-        Log.d(TAG, "onRequestPermissionResult");
-        if (grantResults.length == 0 || grantResults[LOCATION_PERMISSION_INDEX] == PackageManager.PERMISSION_DENIED ||
-                (requestCode == REQUEST_FOREGROUND_AND_BACKGROUND_PERMISSION_RESULT_CODE &&
-                        grantResults[BACKGROUND_LOCATION_PERMISSION_INDEX] ==
-                                PackageManager.PERMISSION_DENIED)) {
-            // Permission denied.
-            Snackbar.make(findViewById(R.id.buttons_layout), R.string.permission_denied_explanation, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(R.string.settings, view ->
-//                            startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK))).show();
-                            startActivity(new Intent()
-                                    .setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setData(Uri.fromParts("package", BuildConfig.APPLICATION_ID, null)).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK))).show();
-//                            startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0));
-//                            new AlertDialog.Builder(this)
-//                                    .setTitle("allow location")
-//                                    .setMessage("need location permission")
-//                                    .setPositiveButton("1", new DialogInterface.OnClickListener() {
-//                                        @RequiresApi(api = Build.VERSION_CODES.Q)
-//                                        @Override
-//                                        public void onClick(DialogInterface dialogInterface, int i) {
-//                                            //Prompt the user once explanation has been shown
-//                                            ActivityCompat.requestPermissions(MainActivity.this,
-//                                                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION},
-//                                                    BACKGROUND_LOCATION_PERMISSION_INDEX);
-//                                        }
-//                                    })
-//                                    .create()
-//                                    .show());
-            // Displays App settings screen.
-
-        } else {
-            checkDeviceLocationSettingsAndStartGeofence(true);
-        }
-    }
-
-    /**
-     * Removes geofences. This method should be called after the user has granted the location
-     * permission.
-     */
-    private void removeGeofences() {
-        if (!foregroundAndBackgroundLocationPermissionApproved()) {
-            return;
-        }
-        geofencingClient.removeGeofences(geofencePendingIntent())
-                .addOnSuccessListener(l -> {
-                    Log.d(TAG, getString(R.string.geofences_removed));
-//                    Toast.makeText(MainActivity.this, R.string.geofences_removed, Toast.LENGTH_SHORT)
-//                            .show();
-                })
-                .addOnFailureListener(l -> Log.d(TAG, getString(R.string.geofences_not_removed)));
-    }
-
     private PendingIntent geofencePendingIntent() {
         Intent intent = new Intent(this, GeofenceBroadcastReceiver.class);
         intent.setAction(ACTION_GEOFENCE_EVENT);
@@ -447,47 +371,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    public void populateGeofenceList() {
-        for (Map.Entry<String, LatLng> entry : Constants.LANDMARKS.entrySet()) {
-            geofenceList.add(new Geofence.Builder()
-                    .setRequestId(entry.getKey())
-                    .setCircularRegion(
-                            entry.getValue().latitude,
-                            entry.getValue().longitude,
-                            Constants.GEOFENCE_RADIUS_IN_METERS
-                    )
-                    .setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
-                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
-                            Geofence.GEOFENCE_TRANSITION_EXIT)
-                    .build());
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onClick(View view) {
-        Log.e("clicked", "clicked");
-//        Toast.makeText(MainActivity.this, "Location", Toast.LENGTH_SHORT).show();
-    }
+//    public void populateGeofenceList() {
+//        for (Map.Entry<String, LatLng> entry : Constants.LANDMARKS.entrySet()) {
+//            geofenceList.add(new Geofence.Builder()
+//                    .setRequestId(entry.getKey())
+//                    .setCircularRegion(
+//                            entry.getValue().latitude,
+//                            entry.getValue().longitude,
+//                            Constants.GEOFENCE_RADIUS_IN_METERS
+//                    )
+//                    .setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
+//                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
+//                            Geofence.GEOFENCE_TRANSITION_EXIT)
+//                    .build());
+//        }
+//    }
 }

@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.http.GET;
 
 public class ParkingSlotsRequest {
 
@@ -38,6 +39,11 @@ public class ParkingSlotsRequest {
         void onSlotsReceived(ParkingLot parkingLot);
 
         void onSlotsFailure();
+    }
+
+    public interface GetDataService {
+        @GET("/parking-spaces-status")
+        Call<ParkingLot> getParkingStatus();
     }
 }
 

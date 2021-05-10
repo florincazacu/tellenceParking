@@ -32,7 +32,7 @@
     <string name="geofence_too_many_geofences">Your app has registered too many geofences</string>
     <string name="geofence_too_many_pending_intents">You have provided too many PendingIntents to the addGeofences() call</string>
     <string name="unknown_geofence_error">Unknown error: the Geofence service is not available now</string>
-    <string name="location_required_error">Location services must be enabled for this game.</string>
+    <string name="location_required_error">Location services must be enabled.</string>
 
     <!-- Geofence Hints -->
     <string name="not_started_hint"></string>
@@ -45,6 +45,7 @@
     <string name="home_location">Home</string>
     <string name="mega_location">Mega</string>
     <string name="posta_location">Posta</string>
+    <string name="rosetti_location">Rosetti Tower</string>
     <string name="union_square_location">in Union Square</string>
 
     <!--    Geofence Status Strings-->
