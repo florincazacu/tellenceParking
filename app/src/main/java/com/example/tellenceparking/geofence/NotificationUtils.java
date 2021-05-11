@@ -20,14 +20,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import kotlin.jvm.internal.Intrinsics;
-
 public final class NotificationUtils {
     private static final int NOTIFICATION_ID = 33;
     private static final String CHANNEL_ID = "GeofenceChannel";
 
     public static void createChannel(@NotNull Context context) {
-        Intrinsics.checkParameterIsNotNull(context, "context");
         if (VERSION.SDK_INT >= 26) {
             NotificationChannel geofenceChannel = new NotificationChannel(CHANNEL_ID,
                     context.getString(R.string.channel_name), NotificationManager.IMPORTANCE_HIGH);
@@ -61,8 +58,6 @@ public final class NotificationUtils {
     }
 
     private static void displayNotification(Context context, NotificationManager notificationManager, int foundIndex, int freeSlots) {
-        Intrinsics.checkParameterIsNotNull(notificationManager, "notificationManager");
-        Intrinsics.checkParameterIsNotNull(context, "context");
         Intent contentIntent = new Intent(context, MainActivity.class);
         contentIntent.putExtra("GEOFENCE_INDEX", foundIndex);
         PendingIntent contentPendingIntent = PendingIntent.getActivity(context, NOTIFICATION_ID, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT);

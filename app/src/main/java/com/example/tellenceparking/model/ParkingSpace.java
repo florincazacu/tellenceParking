@@ -1,17 +1,20 @@
 package com.example.tellenceparking.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.jetbrains.annotations.NotNull;
 
 public class ParkingSpace {
 
     String id;
     int status;
-    String last_update;
+    @JsonProperty("last_update")
+    String lastUpdate;
 
-    public ParkingSpace(String id, int status, String last_update) {
+    public ParkingSpace(String id, int status, String lastUpdate) {
         this.id = id;
         this.status = status;
-        this.last_update = last_update;
+        this.lastUpdate = lastUpdate;
     }
 
     public String getId() {
@@ -30,12 +33,12 @@ public class ParkingSpace {
         this.status = status;
     }
 
-    public String getLast_update() {
-        return last_update;
+    public String getLastUpdate() {
+        return lastUpdate;
     }
 
-    public void setLast_update(String last_update) {
-        this.last_update = last_update;
+    public void setLastUpdate(String lastUpdate) {
+        this.lastUpdate = lastUpdate;
     }
 
     @NotNull
@@ -44,7 +47,7 @@ public class ParkingSpace {
         return "ParkingSpace{" +
                 "id='" + id + '\'' +
                 ", status=" + status +
-                ", last_update='" + last_update + '\'' +
+                ", last_update='" + lastUpdate + '\'' +
                 '}';
     }
 }

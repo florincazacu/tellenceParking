@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class ParkingLot {
 
-    Map<String, List<ParkingSpace>> parking_spaces = new LinkedHashMap<>();
+    private final Map<String, List<ParkingSpace>> parking_spaces = new LinkedHashMap<>();
 
     public Map<String, List<ParkingSpace>> getParking_spaces() {
         return parking_spaces;
@@ -17,8 +17,6 @@ public class ParkingLot {
     @NotNull
     @Override
     public String toString() {
-        return "ParkingLot{" +
-                "parking_spaces=" + parking_spaces +
-                '}';
+        return "ParkingLot{parking_spaces=" + parking_spaces +'}';
     }
 }

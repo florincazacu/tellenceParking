@@ -7,12 +7,12 @@ import androidx.annotation.NonNull;
 import com.example.tellenceparking.R;
 import com.xwray.groupie.kotlinandroidextensions.ViewHolder;
 
-public class Item extends com.xwray.groupie.kotlinandroidextensions.Item {
+public class ParkingSpaceView extends com.xwray.groupie.kotlinandroidextensions.Item {
 
     private final int color;
     private final String number;
 
-    public Item(int color, String number) {
+    public ParkingSpaceView(int color, String number) {
         this.color = color;
         this.number = number;
     }
@@ -20,8 +20,8 @@ public class Item extends com.xwray.groupie.kotlinandroidextensions.Item {
     @Override
     public void bind(@NonNull ViewHolder viewHolder, int position) {
         viewHolder.itemView.findViewById(R.id.item_cardView).setBackgroundColor(color);
-        ((TextView)viewHolder.itemView.findViewById(R.id.item_number))
-        .setText(number);
+        ((TextView) viewHolder.itemView.findViewById(R.id.item_number))
+                .setText(number);
     }
 
     @Override
@@ -33,7 +33,4 @@ public class Item extends com.xwray.groupie.kotlinandroidextensions.Item {
     public int getSpanSize(int spanCount, int position) {
         return spanCount / 3;
     }
-//    public int getSpanSize(int spanCount, int position) {
-//        return spanCount / 3;
-//    }
 }

@@ -8,13 +8,10 @@ import com.google.android.gms.location.GeofenceStatusCodes;
 
 import org.jetbrains.annotations.NotNull;
 
-import kotlin.jvm.internal.Intrinsics;
-
-public final class GeofenceUtils {
+public final class GeofenceUtil {
 
     @NotNull
     public static String errorMessage(@NotNull Context context, int errorCode) {
-        Intrinsics.checkParameterIsNotNull(context, "context");
         Resources resources = context.getResources();
         String errorMessage;
         switch (errorCode) {
