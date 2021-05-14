@@ -14,7 +14,7 @@ import java.util.List;
 public class Floor {
 
     private String title;
-    private List<ParkingSpaceView> parkingSpaces = new ArrayList<>();
+    private List<ParkingSpaceItemView> parkingSpaces = new ArrayList<>();
 
     public Floor(String title) {
         this.title = title;
@@ -28,11 +28,11 @@ public class Floor {
         this.title = title;
     }
 
-    public List<ParkingSpaceView> getParkingSpaces() {
+    public List<ParkingSpaceItemView> getParkingSpaces() {
         return parkingSpaces;
     }
 
-    public void setParkingSpaces(List<ParkingSpaceView> parkingSpaces) {
+    public void setParkingSpaces(List<ParkingSpaceItemView> parkingSpaces) {
         this.parkingSpaces = parkingSpaces;
     }
 

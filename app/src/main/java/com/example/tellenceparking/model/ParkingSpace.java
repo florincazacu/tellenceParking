@@ -47,7 +47,7 @@ public class ParkingSpace {
         return "ParkingSpace{" +
                 "id='" + id + '\'' +
                 ", status=" + status +
-                ", last_update='" + lastUpdate + '\'' +
+                ", lastUpdate='" + lastUpdate + '\'' +
                 '}';
     }
 }

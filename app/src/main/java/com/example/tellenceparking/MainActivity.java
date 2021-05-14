@@ -6,7 +6,6 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -25,7 +24,8 @@ import com.example.tellenceparking.geofence.GeofencingConstants;
 import com.example.tellenceparking.geofence.LandmarkDataObject;
 import com.example.tellenceparking.geofence.NotificationUtils;
 import com.example.tellenceparking.layout.Floor;
-import com.example.tellenceparking.layout.ParkingSpaceView;
+import com.example.tellenceparking.layout.ParkingSpaceItem;
+import com.example.tellenceparking.layout.ParkingSpaceItemView;
 import com.example.tellenceparking.model.ParkingLot;
 import com.example.tellenceparking.requests.ParkingSlotsRequest;
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -85,19 +85,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private ParkingSpaceView generateParkingSpaceView(String id, int status) {
-        if (id.contains("_") && !id.endsWith("_")) {
-            id = id.substring(id.indexOf('_') + 1);
-        }
-        switch (status) {
-            case 1:
-                return new ParkingSpaceView(Color.GREEN, id);
-            case 2:
-                return new ParkingSpaceView(Color.YELLOW, id);
-            case 0:
-            default:
-                return new ParkingSpaceView(Color.RED, id);
-        }
+    private ParkingSpaceItemView generateParkingSpaceView(String id, int status) {
+        return new ParkingSpaceItemView(new ParkingSpaceItem(id, status));
     }
 
     private void populateView(ParkingLot parkingLot) {
@@ -169,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
                         grantResults[BACKGROUND_LOCATION_PERMISSION_INDEX] ==
                                 PackageManager.PERMISSION_DENIED)) {
             // Permission denied.
-            Snackbar.make(findViewById(R.id.toolbar), R.string.permission_denied_explanation, Snackbar.LENGTH_INDEFINITE)
+            Snackbar.make(findViewById(android.R.id.content), R.string.permission_denied_explanation, Snackbar.LENGTH_INDEFINITE)
                     .setAction(R.string.settings, view ->
                             startActivity(new Intent()
                                     .setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
@@ -216,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(TAG, "Error getting location settings resolution: " + sendEx.getMessage());
                 }
             } else {
-                Snackbar.make(findViewById(R.id.toolbar), R.string.location_required_error, Snackbar.LENGTH_INDEFINITE)
+                Snackbar.make(findViewById(android.R.id.content), R.string.location_required_error, Snackbar.LENGTH_INDEFINITE)
                         .setAction(android.R.string.ok, v -> checkDeviceLocationSettingsAndStartGeofence(true)).show();
             }
         });
