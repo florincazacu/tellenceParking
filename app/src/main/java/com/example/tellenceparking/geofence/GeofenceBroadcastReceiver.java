@@ -12,7 +12,7 @@ import com.example.tellenceparking.R;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 
-import java.util.stream.IntStream;
+import java.util.List;
 
 public class GeofenceBroadcastReceiver extends BroadcastReceiver {
 
@@ -31,7 +31,11 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
             if (geofencingEvent.getGeofenceTransition() == Geofence.GEOFENCE_TRANSITION_ENTER) {
                 Log.v(TAG, context.getString(R.string.geofence_entered));
                 String fenceId;
-                if (geofencingEvent.getTriggeringGeofences().isEmpty()) {
+                // Get the geofences that were triggered. A single event can trigger
+                // multiple geofences.
+                List<Geofence> triggeringGeofences = geofencingEvent.getTriggeringGeofences();
+
+                if (triggeringGeofences.isEmpty()) {
                     Log.e(TAG, "No Geofence Trigger Found!");
                     return;
                 } else {
@@ -40,18 +44,18 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
 
                 // Check geofence against the constants listed in GeofenceUtil to see if the
                 // user has entered any of the locations we track for geofences.
-                int foundIndex = IntStream.range(0, GeofencingConstants.LANDMARK_DATA.length)
-                        .filter(index -> GeofencingConstants.LANDMARK_DATA[index].getId().equals(fenceId))
-                        .findFirst().orElse(-1);
+                LandmarkDataObject landmarkDataObject = GeofencingConstants.INSTANCE.getLANDMARK_DATA().stream()
+                        .filter(o -> o.getId().equals(fenceId)).findFirst().orElse(null);
+
 
                 // Unknown Geofences aren't helpful to us
-                if (foundIndex == -1) {
+                if (landmarkDataObject == null) {
                     Log.e(TAG, "Unknown Geofence:");
                     return;
                 }
 
                 NotificationManager notificationManager = ContextCompat.getSystemService(context, NotificationManager.class);
-                NotificationService.sendGeofenceEnteredNotification(notificationManager, context, foundIndex);
+                NotificationService.sendGeofenceEnteredNotification(notificationManager, context, landmarkDataObject);
             }
         }
     }

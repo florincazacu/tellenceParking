@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public final class NotificationService {
+    
     private static final int NOTIFICATION_ID = 33;
     private static final String CHANNEL_ID = "GeofenceChannel";
 
@@ -38,17 +39,15 @@ public final class NotificationService {
         }
     }
 
-    public static void sendGeofenceEnteredNotification(@NotNull NotificationManager notificationManager, @NotNull Context context, int foundIndex) {
-//        Bitmap mapImage = BitmapFactory.decodeResource(context.getResources(), R.drawable.map_small);
-//        BigPictureStyle bigPicStyle = new BigPictureStyle().bigPicture(mapImage).bigLargeIcon(mapImage);
-
+    public static void sendGeofenceEnteredNotification(@NotNull NotificationManager notificationManager,
+                                                       @NotNull Context context, LandmarkDataObject landmarkDataObject) {
         ParkingSlotsRequest parkingSlotsRequest = new ParkingSlotsRequest();
 
         parkingSlotsRequest.fetchParkingLot(new ParkingSlotsRequest.SlotRequestCallback() {
             @Override
             public void onSlotsReceived(ParkingLot parkingLot) {
                 int freeSlots = getFreeSlots(parkingLot);
-                displayNotification(context, notificationManager, foundIndex, freeSlots);
+                displayNotification(context, notificationManager, landmarkDataObject, freeSlots);
             }
 
             @Override
@@ -57,11 +56,11 @@ public final class NotificationService {
         });
     }
 
-    private static void displayNotification(Context context, NotificationManager notificationManager, int foundIndex, int freeSlots) {
+    private static void displayNotification(Context context, NotificationManager notificationManager, LandmarkDataObject landmarkDataObject, int freeSlots) {
         Intent contentIntent = new Intent(context, MainActivity.class);
-        contentIntent.putExtra("GEOFENCE_INDEX", foundIndex);
+        contentIntent.putExtra("GEOFENCE_INDEX", GeofencingConstants.INSTANCE.getLANDMARK_DATA().indexOf(landmarkDataObject));
         PendingIntent contentPendingIntent = PendingIntent.getActivity(context, NOTIFICATION_ID, contentIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        String location = context.getString(GeofencingConstants.INSTANCE.getLANDMARK_DATA()[foundIndex].getName());
+        String location = context.getString(landmarkDataObject.getName());
         Builder builder = new Builder(context, "GeofenceChannel")
                 .setContentTitle(context.getString(R.string.app_name))
                 .setContentText(context.getString(R.string.content_text, location, freeSlots))

@@ -75,11 +75,6 @@ public class MainActivity extends AppCompatActivity {
         locationPermissionManager.onRequestPermissionsResult(requestCode, grantResults);
     }
 
-    //TODO
-    private ParkingSpaceItemView generateParkingSpaceView(String id, int status) {
-        return new ParkingSpaceItemView(new ParkingSpaceItem(id, status));
-    }
-
     private void setUpRecyclerView() {
         groupAdapter.setSpanCount(4);
         RecyclerView rv = findViewById(R.id.recycler_view);
@@ -93,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         parkingSpaces.forEach((floor, spaces) -> {
             Floor currentFloor = new Floor(floor);
             spaces.forEach(parkingSpace -> currentFloor.getParkingSpaces()
-                    .add(generateParkingSpaceView(parkingSpace.getId(), parkingSpace.getStatus())));
+                    .add(new ParkingSpaceItemView(new ParkingSpaceItem(parkingSpace.getId(), parkingSpace.getStatus()))));
             Floor.Header floorGroup = new Floor.Header("Floor: " + floor);
             groupAdapter.add(new Section(floorGroup, currentFloor.getParkingSpaces()));
         });
