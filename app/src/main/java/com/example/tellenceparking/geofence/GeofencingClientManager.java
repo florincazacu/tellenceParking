@@ -87,8 +87,8 @@ public class GeofencingClientManager {
         if (isAppInForeground()) {
             geofencePendingIntent = null;
         } else {
-            geofencePendingIntent = PendingIntent.getBroadcast(activity, 0, intent, PendingIntent.
-                    FLAG_UPDATE_CURRENT);
+            geofencePendingIntent = PendingIntent.getBroadcast(activity, 0, intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
         }
         return geofencePendingIntent;
     }
@@ -110,8 +110,8 @@ public class GeofencingClientManager {
         List<ActivityManager.RunningAppProcessInfo> services = activityManager.getRunningAppProcesses();
         boolean isActivityFound = false;
 
-        if (services.get(0).processName
-                .equalsIgnoreCase(activity.getPackageName()) && services.get(0).importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+        if (services.get(0).processName.equalsIgnoreCase(activity.getPackageName())
+                && services.get(0).importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
             isActivityFound = true;
         }
 
