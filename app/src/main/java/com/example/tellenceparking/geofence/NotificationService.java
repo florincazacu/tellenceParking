@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public final class NotificationUtils {
+public final class NotificationService {
     private static final int NOTIFICATION_ID = 33;
     private static final String CHANNEL_ID = "GeofenceChannel";
 
@@ -67,6 +67,7 @@ public final class NotificationUtils {
                 .setContentText(context.getString(R.string.content_text, location, freeSlots))
                 .setPriority(1)
                 .setContentIntent(contentPendingIntent)
+                .setAutoCancel(true)
                 .setSmallIcon(R.drawable.ic_launcher_foreground);
 
         notificationManager.notify(NOTIFICATION_ID, builder.build());

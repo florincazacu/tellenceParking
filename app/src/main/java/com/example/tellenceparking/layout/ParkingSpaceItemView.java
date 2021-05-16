@@ -2,7 +2,6 @@ package com.example.tellenceparking.layout;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -33,8 +32,8 @@ public class ParkingSpaceItemView extends Item {
         textView.setTextColor(ContextCompat.getColor(textView.getContext(), parkingSpaceItem.getTitleColor()));
 
         ImageView imageView = viewHolder.itemView.findViewById(R.id.carImageView);
-        imageView.setImageDrawable(getTintedDrawable(imageView.getContext(), R.drawable.car_icon, R.color.black));
-        imageView.setVisibility(parkingSpaceItem.displayCarImage()? View.VISIBLE : View.INVISIBLE);
+        imageView.setImageDrawable(getTintedDrawable(imageView.getContext(), R.drawable.car_icon, parkingSpaceItem.getTitleColor()));
+//        imageView.setVisibility(parkingSpaceItem.displayCarImage()? View.VISIBLE : View.INVISIBLE);
     }
 
     private Drawable getTintedDrawable(Context context, @DrawableRes int drawableRes, @ColorRes int colorRes) {

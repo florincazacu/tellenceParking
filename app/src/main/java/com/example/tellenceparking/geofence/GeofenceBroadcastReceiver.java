@@ -51,7 +51,7 @@ public class GeofenceBroadcastReceiver extends BroadcastReceiver {
                 }
 
                 NotificationManager notificationManager = ContextCompat.getSystemService(context, NotificationManager.class);
-                NotificationUtils.sendGeofenceEnteredNotification(notificationManager, context, foundIndex);
+                NotificationService.sendGeofenceEnteredNotification(notificationManager, context, foundIndex);
             }
         }
     }
